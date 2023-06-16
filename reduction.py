@@ -1,9 +1,6 @@
 import sympy
-
-class logic:
-    def __init__(self, var : str, val : int) -> None:
-        self.var = var
-        self.val = val
+from logic import logic
+from satisfying import satisfying_converter
     
 def encode(logic_formula, primes):
     mark = []
@@ -58,17 +55,10 @@ def simultaneous_incongruences(inc):
             else:
                 flag = False
         if(not flag):
-            return i
-    return 'No hay valor'
+            return True
+    return False
 
-def main():
-    x = logic('x', 0)
-    nx = logic('x', 1)
-    y = logic('y', 0)
-    ny = logic('y', 1)
-    z = logic('z', 0)
-    nz = logic('z', 1)
-    logic_formula = [[nx, ny, nz], [nx, y, z], [x, y, nz]]
+def an2(logic_formula):
 
     primes = list(sympy.primerange(0, 1000))
     
@@ -77,11 +67,8 @@ def main():
     for i in enc:
         n *= enc[i]
     
-    res = solve(enc, logic_formula, n)
-    print(res)
-    if(type(res) == int):
-        print(True)
-    else:
-        print(False)
-    
-main()
+    return solve(enc, logic_formula, n)
+    # if(type(res) == int and type(sat) != None):
+    #     print(True)
+    # else:
+    #     print(False)
