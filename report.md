@@ -24,13 +24,13 @@ Ahora Raul va a efectuar su acto de alta pericia Matemática sin la ayuda siquie
 
 Si a y b dos números enteros cualesquiera y n es un número entero positivo, entonces la congruencia: 
 
-$ax \equiv b (mod $ $n)$
+$ax \equiv b (mod \text{ } n)$
 
-tiene una solución para x si y solo si b es divisible por el máximo común divisor de a y n (denotado mediante mcd(a,n)). Cuando éste es el caso, y $x_0$ es una solución de la ecuación, entonces el conjunto de todas las soluciones está dado por:
+tiene una solución para x si y solo si b es divisible por el máximo común divisor de a y n (denotado mediante $mcd(a,n)$). Cuando éste es el caso, y $x_0$ es una solución de la ecuación, entonces el conjunto de todas las soluciones está dado por:
 
-$ x_0 + k \frac {n}{d} | k \in Z$
+$$ x_0 + k \frac {n}{d} | k \in Z$$
 
-En particular, existirán exactamente d = mcd(a,n) soluciones en el conjunto de residuos $0,1,2,\dots,n-1$ .
+En particular, existirán exactamente $d = mcd(a,n)$ soluciones en el conjunto de residuos $0, 1, 2, .., n-1$
 
 <br>
 
@@ -38,13 +38,13 @@ En particular, existirán exactamente d = mcd(a,n) soluciones en el conjunto de 
 
 <br>
 
-Sean m1 y m2 dos naturales primos entre sí. Si cada una de las congruencias lineales:
+Sean $m1$ y $m2$ dos naturales primos entre sí. Si cada una de las congruencias lineales:
 
 $a_1x \equiv b_1$ ($mod$ $m_1$)
 
 $a_2x \equiv b_2$ ($mod$ $m_2$)
 
-Tiene solución, entonces existe solución común a ambas congruencias en  $Z$. Si, además, mcd (a1,m1) = 1 y mcd (a2, m2) = 1, dicha solución es única
+Tiene solución, entonces existe solución común a ambas congruencias en  $Z$. Si, además, $mcd (a1,m1) = 1$ y $mcd (a2, m2) = 1$, dicha solución es única
 
 <br>
 
@@ -52,13 +52,13 @@ Tiene solución, entonces existe solución común a ambas congruencias en  $Z$. 
 
 <br>
 
-Supongamos que $n_1, n_2, …, n_k$ son enteros positivos coprimos dos a dos. Entonces, para enteros dados $a_1,a_2, …, a_k$, existe un entero x que resuelve el sistema de congruencias simultáneas
+Supongamos que $n_1, n_2, .., n_k$ son enteros positivos coprimos dos a dos. Entonces, para enteros dados $a_1, a_2, .., a_k$, existe un entero $x$ que resuelve el sistema de congruencias simultáneas
 
 $x \equiv a_1$ ($mod$ $n_1$)
 
 $x \equiv a_2$ ($mod$ $n_2$)
 
-$\dots$
+$...$
 
 $x \equiv a_k$ ($mod$ $n_k$)
 
@@ -112,17 +112,17 @@ En esta parte de la demostración se tratará de reducir el bien conocido proble
 
 ... Explicacion de 3SAT...
 
-La reducción consiste en asignarle a cada variable de la fórmula lógica un numero primo que la represente, por tanto el primer paso es elegir $p_1, p_2, \dots, p_n$ donde $p$ es un número primo (para poder aplicar el teorema chino del resto visto anteriormente) y $n$ es el número de variables.
+La reducción consiste en asignarle a cada variable de la fórmula lógica un numero primo que la represente, por tanto el primer paso es elegir $p_1, p_2, .., p_n$ donde $p$ es un número primo (para poder aplicar el teorema chino del resto visto anteriormente) y $n$ es el número de variables.
 
 De esta forma cada cláusula del problema **3-SAT** es codificada como un sistema de congruencias de la forma:
 
 - Sea $V$ el conjunto de variables de la fórmula lógica:
 
-$\forall v \in V$ $\exist$ { $a \equiv b $ ($mod$ $p$) } donde $b \in {1, 0}$ en dependencia si la variable aparece negada o no respectivamente y $p$ es el número primo asociado a $v$.
+$\forall v \in V \text{ } \exists {\text{ } a \equiv b \text{ } (mod \text{ } p)}$ donde $b \in {1, 0}$ en dependencia si la variable aparece negada o no respectivamente y $p$ es el número primo asociado a $v$.
 
 Luego, por cada cláusula, se agrupan las ecuaciones de congruencia que se correspondan con sus respectivas variables. Por ejemplo:
 
-- Sea $x$ $\vee$ ~$y$ $ \vee$ $z$ la i-ésima cláusula de la fórmula y $p_1, p_2, p_3$ sus primos asociados respectivamente:
+- Sea $x \lor \lnot y \lor z$ la i-ésima cláusula de la fórmula y $p_1, p_2, p_3$ sus primos asociados respectivamente:
 
 Se obtienen las siguientes ecuaciones:
 
@@ -142,7 +142,7 @@ $x \not \equiv a_1$ ($mod$ $p_1 * p_2 * p_3$)
 
 $x \not \equiv a_2$ ($mod$ $p_1 * p_2 * p_3$)
 
-$\dots$
+$...$
 
 $x \not \equiv a_n$ ($mod$ $p_1 * p_2 * p_3$)
 
