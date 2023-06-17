@@ -24,7 +24,7 @@ def test(n):
     #            print("x = " + str(x) + " is congruent with a[" + str(i) + "] = " + str(a[i][0]) + " mod b[" + str(i) + "] = " + str(a[i][1]) + "\n")
 
     print("\n\nusing genetic algorithm:")
-    x = genetic_algorithm(100, 100, a, 0.1)
+    x = genetic_algorithm(1000, 200, a, 0.1)
     if x == -1:
         print("Solution not found")
     else:
