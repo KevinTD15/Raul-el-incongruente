@@ -6,8 +6,8 @@ from brute_force import simultaneous_incongruence
 def _generate_input(n):
     input = []
     for i in range(int(n)):
-        ai = np.random.randint(1, 10)
-        bi = np.random.randint(ai, 10)
+        ai = np.random.randint(1, 100)
+        bi = np.random.randint(ai, 100)
         input.append((ai, bi))
     return input
 
@@ -15,13 +15,13 @@ def test(n):
     a = _generate_input(n)
     print(a, "\n")
     
-    x = simultaneous_incongruence(a)
-    print("using brute force algorithm:")
-    print("x = ", x)
-    if isinstance(x, int):
-        for i in range(len(a)):
-            if x % a[i][1] == a[i][0] % a[i][1]:
-                print("x = " + str(x) + " is congruent with a[" + str(i) + "] = " + str(a[i][0]) + " mod b[" + str(i) + "] = " + str(a[i][1]) + "\n")
+    #x = simultaneous_incongruence(a)
+    #print("using brute force algorithm:")
+    #print("x = ", x)
+    #if isinstance(x, int):
+    #    for i in range(len(a)):
+    #        if x % a[i][1] == a[i][0] % a[i][1]:
+    #            print("x = " + str(x) + " is congruent with a[" + str(i) + "] = " + str(a[i][0]) + " mod b[" + str(i) + "] = " + str(a[i][1]) + "\n")
 
     print("\n\nusing genetic algorithm:")
     x = genetic_algorithm(100, 100, a, 0.1)
