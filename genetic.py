@@ -44,8 +44,6 @@ def _objective_f(x, congruences):
     # a valid solution.
     num_satisfied = 0
     for i in congruences:
-        if x is None:
-                print(x)
         if check_congruence(x, i[0], i[1]):
             num_satisfied += 1
     return num_satisfied
@@ -62,8 +60,6 @@ def _evaluate_pop(population, congruences):
     # evaluates the current population using the objective function
     scores = []
     for i in population:
-        if i is None:
-            print(population)
         score = len(congruences) - _objective_f(i, congruences)
         scores.append(score)
     return scores
@@ -109,14 +105,12 @@ def genetic_algorithm(generations, pop_size, congruences, mutation_rate):
             parent2 = _selection(pop, scores)
             # keep parents in the population
             new_pop.extend([parent1, parent2])
-            #print("\nadded parents np: ", new_pop)
             # add new children
             child1 = _crossover(parent1, parent2)
             child2 = _crossover(parent1, parent2)
             child1 = _mutation(child1, mutation_rate)
             child2 = _mutation(child1, mutation_rate)
             new_pop.extend([child1, child2])
-            #print("\nadded children np: ", new_pop)
         while len(new_pop) > pop_size:
             new_pop.pop()
         pop = new_pop
