@@ -305,3 +305,93 @@ def tester():
             print('OK')
         else:
             break```
+```
+
+...
+### Heurística
+
+Para resolver nuestro problema inicial de una manera relativamente eficiente ya que demostramos que es NP, creamos un algoritmo genético.
+
+Los individuos de la población son números enteros, y la población inicial es creada de manera aleatoria con distribución uniforme discreta.
+
+```python
+def _generate_initial_pop(size):
+    pop = []
+    for i in range(size):
+        pop.append(np.random.randint(0, 1000000))
+    return pop
+```
+
+En la función objetivo queremos minimizar el número de congruencias que son satisfechas por $x$. Si en algún momento encontramos un valor de $x$ tal que no satsifaga ninguna congruencia, tenemos una solución válida y terminamos el algoritmo.
+
+```python
+def _objective_f(x, congruences):
+    num_satisfied = 0
+    for i in congruences:
+        if check_congruence(x, i[0], i[1]):
+            num_satisfied += 1
+    return num_satisfied
+```
+
+En cada generación, primero calculamos la puntuación o el score de los individuos de la población actual y procedemos al proceso de seleccion de los "padres", al cruce y la mutación.
+
+```python
+def _evaluate_pop(population, congruences):
+    scores = []
+    for i in population:
+        #restamos xq queremos minimizar la funcion obj
+        score = len(congruences) - _objective_f(i, congruences)
+        scores.append(score)
+    return scores
+
+def _selection(population, scores):
+    #Aqui seleccionamos los padres, los individuos con alto
+    #puntaje tendran mas posibilidades de ser seleccionados
+    total_fitness = sum(scores)
+    prob = [score / total_fitness for score in scores]
+    cum_prob = [sum(prob[:i+1]) for i in range(len(prob))]
+    r = random.random()
+    for i, c_prob in enumerate(cum_prob):
+        if r <= c_prob:
+            return population[i]
+
+def _crossover(parent1, parent2):
+    if abs(parent1 - parent2) <= 2:
+        return np.random.randint(1000000)
+    child = random.randint(min(parent1, parent2) + 1, max(parent1, parent2) - 1)
+    return child
+
+def _mutation(i, mutation_rate):
+    r = random.random()
+    return np.random.randint(1000000) if (r <= mutation_rate) else i
+```
+
+Luego para actualizar la población usada en la siguiente generacion, usamos los padres seleccionados pues tienen alta probabilidad de tener puntaje alto y añadimos los hijos creados con el cruce de estos, o si ocurre una mutación un nuevo individuo producto de la mutación de un hijo.
+
+```python
+def genetic_algorithm(generations, pop_size, congruences, mutation_rate):
+    pop = _generate_initial_pop(pop_size)
+    for gen in range(generations):
+        scores = _evaluate_pop(pop, congruences)
+        # check if an individual is a valid solution
+        for i in range(len(scores)):
+            if scores[i] == len(congruences):
+                print("Solution found: ", pop[i])
+                return pop[i]
+        new_pop = []
+        while len(new_pop) < pop_size:
+            parent1 = _selection(pop, scores)
+            parent2 = _selection(pop, scores)
+            # keep parents in the population
+            new_pop.extend([parent1, parent2])
+            # add new children
+            child1 = _crossover(parent1, parent2)
+            child2 = _crossover(parent1, parent2)
+            child1 = _mutation(child1, mutation_rate)
+            child2 = _mutation(child1, mutation_rate)
+            new_pop.extend([child1, child2])
+        while len(new_pop) > pop_size:
+            new_pop.pop()
+        pop = new_pop
+    return -1   #en el caso que ocurran todas las generaciones y no se haya encontrado una solución.
+```
