@@ -4,6 +4,7 @@ def simultaneous_incongruence(nums):
     for i in range(10000000000):
         for j in nums:
             if((i - j[0]) % j[1] == 0):
+                flag = True
                 break
             else:
                 flag = False
