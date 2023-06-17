@@ -76,13 +76,19 @@ Todas las soluciones $x$ son entonces congruentes módulo el $mcm(n_i)$ $\forall
 
 <br>
 
-...
+Sean:
+
+$x \not \equiv a_1$ ($mod$ $n_1$) $\implies$ $x \not = n_1 * k_1 + a_1 $
+
+$x \not \equiv a_2$ ($mod$ $n_2$) $\implies$ $x \not = n_2 * k_2 + a_2 $
+ 
+$x \not \equiv a_3$ ($mod$ $n_3$) $\implies$ $x \not = n_3 * k_3 + a_3 $
+
+Por lo que hay que buscar un valor de $x$ tal q se complan esas ecuaciones.
 
 <br>
 
 ## Complejidad:
-
-<br>
 
 Este es un problema que pertenece al conjunto conocido como **NP-Completos**.
 
@@ -90,15 +96,11 @@ Este es un problema que pertenece al conjunto conocido como **NP-Completos**.
 
 ### Demostración:
 
-<br>
-
 Para demostrar que este problema es **NP-Completo** es necesario demostrar que es **NP** y **NP-Duro**.
 
 <br>
 
 ### NP:
-
-<br>
 
 Esta parte de la demostración es relativamente sencilla ya que basta con demostrar que la verificación de cualquier candidato a solución puede ser resuelta en tiempo polinomial, lo cual es verdad debido a que: Sea $x$ el valor candidato a solución, se desea verificar si $x$ es incongruente con todas las ecuaciones de congruencia del sistema. Esto se realiza sustituyendo en cada una de las ecuaciones el valor de $x$ y verificando si existe solución para ese valor. Por lo que queda demostrado que el problema es **NP**.
 
@@ -106,13 +108,77 @@ Esta parte de la demostración es relativamente sencilla ya que basta con demost
 
 ### NP-Duro:
 
-<br>
-
 En esta parte de la demostración se tratará de reducir el bien conocido problema **NP** **3-SAT**.
 
-... Explicacion de 3SAT...
+Fue implementado un algoritmo para detectar cuando una fórmula es satisfacible o no, la cual servirá como tester mas adelante.
+
+```python
+def satisfying_assignment(formula):
+    {}
+
+    if formula == []:
+        return {}
+
+    if [] in formula:
+        return None
+
+    soln = {}
+    unit_clauses = unit_clause(formula)
+
+    while unit_clauses:
+        for literal in unit_clauses:
+            formula = help_update(formula, (literal[0], literal[1]))
+            
+            if [] in formula:
+                return None
+
+            soln.setdefault(literal[0], literal[1])
+            
+            if formula == []:
+                return soln
+
+        unit_clauses = unit_clause(formula)
+
+    literal = formula[0][0]
+
+    if literal[1] is True:
+        switch_bool = False
+    else:
+        switch_bool = True
+
+    nu_form = help_update(formula, literal)
+    nu_form2 = help_update(formula, (literal[0], switch_bool))
+
+    rec = satisfying_assignment(nu_form)
+    if rec is not None:
+        soln.update({literal[0]: literal[1]})
+        return soln | rec
+
+    rec2 = satisfying_assignment(nu_form2)
+    if rec2 is not None:
+        soln.update({literal[0]: switch_bool})
+        return soln | rec2
+
+    return None
+```
+
+En particular, el problema se denomina **3-SAT** cuando las clсusulas tienen longitud tres. Dado que cualquier fórmula en forma normal conjuntiva puede ser escrita con clсusulas de longitud tres, resolver el problema 3SAT es equivalente a resolver el problema **SAT**.
 
 La reducción consiste en asignarle a cada variable de la fórmula lógica un numero primo que la represente, por tanto el primer paso es elegir $p_1, p_2, .., p_n$ donde $p$ es un número primo (para poder aplicar el teorema chino del resto visto anteriormente) y $n$ es el número de variables.
+
+```python
+def encode(logic_formula, primes):
+    mark = []
+    encoded = {}
+    index = 0
+    for i in logic_formula:
+        for j in i:
+            if(j.var not in mark):
+                encoded[j.var] = primes[index]
+                index += 1
+                mark.append(j.var)
+    return encoded
+```
 
 De esta forma cada cláusula del problema **3-SAT** es codificada como un sistema de congruencias de la forma:
 
@@ -132,6 +198,32 @@ $a_i \equiv 1$ ($mod$ $p_2$)
 
 $a_i \equiv 0$ ($mod$ $p_3$)
 
+```python
+def simultaneous_congruences(encoded, logic_formula):
+    solutions = []
+    for i in logic_formula:
+        b = []
+        n = []
+        for j in i:
+            b.append(j.val)
+            n.append(encoded[j.var])
+        solutions.append(chinese_reminder_theorem(b, n))
+    return solutions
+
+def chinese_reminder_theorem(a, m):
+    M = 1
+    for mi in m:
+        M *= mi
+    
+    Mi = [M // mi for mi in m]
+    
+    mult_inverse = [pow(Mi[i], -1, m[i]) for i in range(len(m))]
+    
+    x = sum(a[i] * Mi[i] * mult_inverse[i] for i in range(len(m))) % M
+    
+    return x
+```
+
 Al resolver el sistema de congruencias usando el teorema chino del resto se obtendrá el conjunto de valores de $a$ tales que $a$ sea congruente con los sistemas de congruencias lineales correspondientes a cada cláusula.
 
 *Hasta este momento todo lo explicado han sido transformaciones necesarias para poder reducir una entrada de **3-SAT** a nuestro problema, las cuales son todas polinomiales.*
@@ -146,8 +238,70 @@ $...$
 
 $x \not \equiv a_n$ ($mod$ $p_1 * p_2 * p_3$)
 
+```python
+def simultaneous_incongruences(inc):
+    flag = True
+    for i in range(10000000000):
+        for j in inc:
+            if((i - j[0]) % j[1] == 0):
+                flag = True
+                break
+            else:
+                flag = False
+        if(not flag):
+            return True
+    return False
+```
+
 Este sistema coincide con nuestro problema inicial de incongruencias simultáneas, luego, si se logra encontrar un valor de $x$ tal que $x$ sea incongruente a todos en el sistema, la fórmula lógica de es satisfacible, en caso contrario, no lo es, debido a esto la transformación de la salida de nuestro problema a la salida de **3-SAT** es también polinomial, por lo que queda demostrado que nuestro problema es tan o más difícil que **3-SAT** por lo que nuestro problema es **NP-Duro**.
 
 Como ya se demostró que este problema es **NP** y **NP-Duro**, queda demostrado que el problema de Incongruencias simultáneas es **NP-Completo**.
 
 
+## Generador y Tester
+
+Fue creada una carpeta la en la cual se generan 2 archivos .npy, uno contiene los casos de prueba q consisten en formulas lógicas, y el otro contiene los resultados, los cuales consisten en decir si es satisfacible o no cada formula (método satisfying mencionado enteriormente).
+
+### Generador
+
+Consiste en generar una cantidad de variables y asignarle sus valores (si la variable esta negada es un 1, en caso contrario es 0).
+
+```python
+def create_variables(variables):
+    vars = []
+    for i in range(65, 65 + variables):
+        vars.append(chr(i))
+    return vars
+
+def assign_values(var):
+    vars = []
+    for i in var:
+        x = rd.randint(0, 1)
+        vars.append(logic(i, x))
+    return vars
+```
+
+Como se estan creando entradas de **3-SAT** cada cláusula tendrá exactamente 3 variables.
+
+```python
+for i in range(clauses):
+        c = list(rd.sample(var, 3))
+        formula.append(c)
+    return formula
+```
+
+### Tester
+
+Este sencillamente carga los casos de prueba creados por el generador, llama al algoritmo implementado y luego verifica si la solución es válida.
+
+```python
+def tester():
+    t = np.load('TestCases/test.npy', allow_pickle=True)
+    s = np.load('TestCases/solutions.npy', allow_pickle=True)
+    
+    for i in range(len(t)):
+        res = an2(t[i])
+        if(res == s[i]):
+            print('OK')
+        else:
+            break```
