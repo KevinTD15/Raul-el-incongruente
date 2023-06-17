@@ -88,6 +88,10 @@ Por lo que hay que buscar un valor de $x$ tal q se complan esas ecuaciones.
 
 <br>
 
+## Soluciones
+
+Fueron implementadas 2 soluciones, una con reduccion desde **3-SAT** para demostrar que es **NP** y la otra fue una aproximación mediante una metaheurística de algoritmo genético que funciona mucho más rápido y con una mayor cantidad de ecuaciones en la mayoría de los casos.
+
 ## Complejidad:
 
 Este es un problema que pertenece al conjunto conocido como **NP-Completos**.
