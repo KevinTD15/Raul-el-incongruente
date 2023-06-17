@@ -4,7 +4,7 @@ import random as rd
 import numpy as np
 
 def generator():
-    clauses = rd.randint(1, 5)
+    clauses = rd.randint(10, 15)
     variables = rd.randint(3, 5)
     var = create_variables(variables)
     var = assign_values(var)
@@ -31,7 +31,7 @@ def assign_values(var):
 def save_npy():
     cases = []
     solutions = []
-    for i in range(1000):
+    for i in range(10000):
         x = generator()
         y = satisfying_converter(x)
         cases.append(x)
